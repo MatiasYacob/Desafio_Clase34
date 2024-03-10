@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src/app.js",
+    "dev": "nodemon src/app.js --mode development",
+    "prod": "nodemon src/app.js --mode production",
     "build": "rollup -c rollup.config.js"
   },
   "author": "",
@@ -21,7 +22,6 @@
     "express": "^4.18.2",
     "express-handlebars": "^7.1.2",
     "express-session": "^1.17.3",
-    
     "handlebars": "^4.7.8",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.3",
@@ -36,7 +36,8 @@
     "play-sound": "^1.1.6",
     "socket.io": "^4.7.2",
     "sweetalert2": "^11.10.1",
-    "url": "^0.11.3"
+    "url": "^0.11.3",
+    "winston": "^3.12.0"
   },
   "keywords": [],
   "nodemonconfig": {

@@ -10,6 +10,7 @@ import passport from 'passport';
 import { allowInsecurePrototypeAccess } from "@handlebars/allow-prototype-access";
 import Handlebars from "handlebars";
 import config from './config/config.js';
+import { addLogger } from './config/logger_CUSTOM.js';
 
 // Rutas
 import mokingRouter from './routes/mock.router.js'
@@ -51,7 +52,8 @@ const app = express();
 const port = config.port;
 //URL de la base de datos de mongo
 const MONGOURL = config.mongoUrl;
-
+//Logger
+app.use(addLogger);
 
 
 // Configuración de Express Session
