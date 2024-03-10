@@ -6,25 +6,23 @@ const { Types } = mongoose;
 const Pmanager = new ProductManager();
 
 class CartManager {
-    constructor(){}
+    constructor() {}
+
     async getProductsInCart(userId) {
         try {
             const cart = await Cart.findOne({ user: userId });
 
             if (!cart) {
-                console.log('No se encontró un carrito para el usuario.' +userId );
                 return [];
             }
 
             return cart.products;
         } catch (error) {
-            console.error('Error al obtener productos del carrito:', error);
             return null;
         }
     }
 
     async addProductToCart(userId, _id) {
-        console.log("id llegando" +_id);
         try {
             const productToAdd = await Pmanager.getProductBy_id(_id);
             if (!productToAdd) {
@@ -45,19 +43,10 @@ class CartManager {
                 });
 
                 await newCart.save();
-                console.log('Nuevo carrito creado exitosamente con un producto.');
                 return newCart;
             }
 
-            const existingProduct = cart.products.find(item => {
-                const itemProductId = String(item.productId);
-                const inputId = String(_id);
-
-                console.log('itemProductId:', itemProductId);
-                console.log('inputId:', inputId);
-
-                return itemProductId === inputId;
-            });
+            const existingProduct = cart.products.find(item => String(item.productId) === String(_id));
 
             if (existingProduct) {
                 existingProduct.quantity += 1;
@@ -71,47 +60,39 @@ class CartManager {
             }
 
             await cart.save();
-            console.log(`Producto ${productToAdd.title} agregado al carrito exitosamente.`);
 
             return cart;
         } catch (error) {
             if (error instanceof CustomError) {
-                console.error(`Error personalizado (${error.name}):`, error.details);
                 return { success: false, message: error.message };
             } else {
-                console.error('Error al agregar producto al carrito:', error);
                 return { success: false, message: 'Error interno del servidor' };
             }
         }
     }
-      
-      async removeFromCart(userId, _id) {
+
+    async removeFromCart(userId, _id) {
         try {
             const cart = await Cart.findOne({ user: userId });
-    
-           
-    
+
             if (!cart) {
                 return { success: false, message: 'No se encontró un carrito para el usuario' };
             }
-    
+
             const productIndex = cart.products.findIndex(product => String(product.productId) === String(_id));
-    
+
             if (productIndex === -1) {
                 return { success: false, message: 'El producto no está en el carrito' };
             }
-    
+
             cart.products.splice(productIndex, 1);
             await cart.save();
-    
-            console.log(`Producto ${_id} eliminado del carrito exitosamente.`);
+
             return { success: true, message: `Producto ${_id} eliminado del carrito` };
         } catch (error) {
-            console.error('Error al eliminar producto del carrito:', error);
             return { success: false, message: 'Error interno del servidor' };
         }
     }
-    
 
     async removeAllProductsFromCart(userId) {
         try {
@@ -124,10 +105,8 @@ class CartManager {
             cart.products = [];
             await cart.save();
 
-            console.log('Todos los productos eliminados del carrito exitosamente.');
             return { success: true, message: 'Todos los productos eliminados del carrito' };
         } catch (error) {
-            console.error('Error al eliminar todos los productos del carrito:', error);
             return { success: false, message: 'Error interno del servidor' };
         }
     }
@@ -149,10 +128,8 @@ class CartManager {
             productToUpdate.quantity = quantity;
             await cart.save();
 
-            console.log(`Cantidad del producto ${_id} actualizada en el carrito exitosamente.`);
             return { success: true };
         } catch (error) {
-            console.error('Error al actualizar cantidad del producto en el carrito:', error);
             return { success: false, message: 'Error interno del servidor' };
         }
     }
@@ -211,7 +188,6 @@ class CartManager {
                 nextLink
             };
         } catch (error) {
-            console.error('Error al obtener productos del carrito:', error);
             return {
                 status: 'error',
                 payload: [],
@@ -226,9 +202,6 @@ class CartManager {
             };
         }
     }
-
-    
-      
 }
 
 export default CartManager;

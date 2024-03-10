@@ -83,7 +83,7 @@ class TicketManager {
 
             const tickets = await Ticket.find({ purchaser: user.email });
 
-            console.log("Tickets obtenidos exitosamente para el usuario:", user.email);
+            
 
             return tickets;
         } catch (error) {

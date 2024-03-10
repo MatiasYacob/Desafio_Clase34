@@ -3,19 +3,20 @@ import config from "./config.js";
 
 const customLevelsOptions = {
     levels: {
-        fatal: 0,
-        error: 1,
-        warn: 2,
-        info: 3,
-        http: 4,
-        debug: 5
+        debug: 0,
+        http: 1,
+        info: 2,
+        warn: 3,
+        error: 4,
+        fatal: 5
     },
     colors: {
-        fatal: 'red',
+        debug: 'gray',
+        http: 'cyan',
+        info: 'green',
+        warn: 'yellow',
         error: 'red',
-        warn: 'red',
-        info: 'blue',
-        debug: 'green'
+        fatal: 'magenta'
     }
 };
 
@@ -26,7 +27,7 @@ const Prodlogger = winston.createLogger({
     levels: customLevelsOptions.levels,
     transports: [
         new winston.transports.Console({
-            level: "http",
+            level: "info", // Solo logea a partir del nivel info
             format: winston.format.combine(
                 winston.format.colorize({ colors: customLevelsOptions.colors }),
                 winston.format.simple()
@@ -34,7 +35,7 @@ const Prodlogger = winston.createLogger({
         }),
         new winston.transports.File({
             filename: "./errors.log",
-            level: 'warn',
+            level: 'error', // Solo logea a partir del nivel error
             format: winston.format.simple()
         })
     ]
@@ -44,24 +45,22 @@ const Prodlogger = winston.createLogger({
 const Devlogger = winston.createLogger({
     levels: customLevelsOptions.levels,
     transports: [
-        new winston.transports.Console({ level: "http" })
-    ],
-    format: winston.format.combine(
-        winston.format.colorize({ colors: customLevelsOptions.colors }),
-        winston.format.simple()
-    )
+        new winston.transports.Console({
+            level: "fatal", // Logea a partir del nivel debug
+            format: winston.format.combine(
+                winston.format.colorize({ colors: customLevelsOptions.colors }),
+                winston.format.simple()
+            )
+        })
+    ]
 });
 
-// Declarar Middleware.
+// Middleware para seleccionar el logger según el entorno
 export const addLogger = (req, res, next) => {
     if (config.environment === 'production') {
         req.logger = Prodlogger;
-        req.logger.warn(`${req.method} en ${req.url} - at ${new Date().toLocaleDateString()} - ${new Date().toLocaleTimeString()}`);
-        req.logger.http(`${req.method} en ${req.url} - at ${new Date().toLocaleDateString()} - ${new Date().toLocaleTimeString()}`);
     } else {
         req.logger = Devlogger;
-        req.logger.warn(`${req.method} en ${req.url} - at ${new Date().toLocaleDateString()} - ${new Date().toLocaleTimeString()}`);
-        // req.logger.http(`${req.method} en ${req.url} - at ${new Date().toLocaleDateString()} - ${new Date().toLocaleTimeString()}`);
     }
     next();
 };
