@@ -10,7 +10,7 @@ class ProductManager {
         try {
             const newProduct = new Product(producto);
             await newProduct.save();
-            console.log('Producto agregado exitosamente.');
+            
             return newProduct;
         } catch (error) {
             console.error('Error al agregar el producto:', error);
@@ -42,7 +42,7 @@ class ProductManager {
                 console.log('El producto no existe.');
                 return null;
             }
-            console.log('Producto eliminado exitosamente.');
+            
             return product;
         } catch (error) {
             console.error('Error al eliminar el producto:', error);

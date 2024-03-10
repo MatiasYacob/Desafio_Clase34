@@ -9,11 +9,7 @@ import { addLogger } from "../config/logger_CUSTOM.js";
 
 const manager = new CartManager();
 
-// Middleware de logger para las funciones controladoras
-const loggerMiddleware = (req, res, next) => {
-    req.logger = addLogger;
-    next();
-};
+
 
 export const getProductsInCartController = async (req, res) => {
     try {

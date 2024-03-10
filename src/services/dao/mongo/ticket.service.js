@@ -54,13 +54,27 @@ class TicketManager {
     }
 
     async checkStock(products) {
-        for (const product of products) {
-            const existingProduct = await Product.findById(product.productId);
-            if (!existingProduct || existingProduct.stock < product.quantity || !existingProduct.status) {
-                throw new Error(`No hay suficiente stock o el producto está fuera de stock: ${existingProduct.title}`);
+        const session = await Product.startSession();
+        session.startTransaction();
+    
+        try {
+            for (const product of products) {
+                const existingProduct = await Product.findById(product.productId).session(session);
+    
+                if (!existingProduct || existingProduct.stock < product.quantity) {
+                    throw new Error(`No hay suficiente stock para el producto: ${existingProduct ? existingProduct.title : 'Producto no encontrado'}`);
+                }
             }
+    
+            await session.commitTransaction();
+            session.endSession();
+        } catch (error) {
+            await session.abortTransaction();
+            session.endSession();
+            throw error;
         }
     }
+    
 
     async updateStock(products) {
         for (const product of products) {
@@ -77,7 +91,7 @@ class TicketManager {
             const user = await userModel.findById(userId);
 
             if (!user) {
-                console.log("Usuario no encontrado.");
+                
                 return [];
             }
 

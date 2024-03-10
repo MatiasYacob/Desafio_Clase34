@@ -1,9 +1,5 @@
-
-
-import { productRepository } from "../services/service.js"
+import { productRepository } from "../services/service.js";
 import mongoose from "mongoose";
-
-
 
 // Función para obtener todos los productos con filtros y paginación
 export async function getProducts(req, res) {
@@ -54,13 +50,15 @@ export async function getProducts(req, res) {
             nextLink: currentPage < totalPages ? `/realtimeproducts?limit=${limit}&page=${currentPage + 1}` : null,
         };
 
+        req.logger.info('Productos obtenidos exitosamente.');
         res.render("realtimeproducts.hbs", { responseObject });
     } catch (error) {
-        console.error('Error al obtener los productos:', error);
+        req.logger.error('Error al obtener los productos:', error);
         res.status(500).json({ status: 'error', error: 'Error al obtener los productos' });
     }
 }
-//obtiene los productos para el usuario
+
+// Obtener los productos para el usuario
 export async function getProductsUser(req, res) {
     try {
         const { limit = 10, page = 1, sort, query } = req.query;
@@ -109,14 +107,13 @@ export async function getProductsUser(req, res) {
             nextLink: currentPage < totalPages ? `/products?limit=${limit}&page=${currentPage + 1}` : null,
         };
 
+        req.logger.info('Productos obtenidos exitosamente para el usuario.');
         res.render("productos.hbs", { responseObject });
-        //res.json({responseObject})
     } catch (error) {
-        console.error('Error al obtener los productos:', error);
+        req.logger.error('Error al obtener los productos:', error);
         res.status(500).json({ status: 'error', error: 'Error al obtener los productos' });
     }
 }
-
 
 // Función para eliminar un producto por su ID
 export async function deleteProduct(req, res) {
@@ -134,20 +131,17 @@ export async function deleteProduct(req, res) {
             return res.status(404).json({ status: 'error', error: 'El producto no existe' });
         }
 
-        return res.status(200).json({
+        req.logger.info('Producto eliminado exitosamente.');
+        res.status(200).json({
             status: 'success',
             message: 'Producto eliminado exitosamente',
             logMessage: 'Producto eliminado exitosamente. Mensaje adicional para el log de la consola.',
         });
-        
-
     } catch (error) {
-        console.error('Error al eliminar el producto:', error);
+        req.logger.error('Error al eliminar el producto:', error);
         res.status(500).json({ status: 'error', error: 'Error al eliminar el producto' });
     }
 }
-
-
 
 // Función para obtener un producto por _id
 export async function getProductById(req, res) {
@@ -156,12 +150,14 @@ export async function getProductById(req, res) {
         const product = await productRepository.findById(product_id);
 
         if (product) {
+            req.logger.info('Producto obtenido exitosamente por _id.');
             res.json(product);
         } else {
+            req.logger.error('Producto no encontrado por _id.');
             res.status(404).json({ error: 'Producto no encontrado' });
         }
     } catch (error) {
-        console.error('Error al obtener el producto por _id:', error);
+        req.logger.error('Error al obtener el producto por _id:', error);
         res.status(500).json({ error: 'Error al obtener el producto por _id' });
     }
 }
@@ -173,6 +169,7 @@ export async function addProduct(req, res) {
 
         // Validación de campos obligatorios
         if (!title || !price || !thumbnails || !code || !stock) {
+            req.logger.error('Faltan campos obligatorios para agregar el producto.');
             return res.status(400).json({ status: 'error', message: 'Faltan campos obligatorios' });
         }
 
@@ -190,20 +187,19 @@ export async function addProduct(req, res) {
 
         if (product) {
             // Log informativo
-            console.log('Producto agregado exitosamente:', product);
+            req.logger.info('Producto agregado exitosamente:');
             res.status(201).json({ status: 'success', data: product });
         } else {
             // Log de error
-            console.error('Error al agregar el producto');
+            req.logger.error('Error al agregar el producto');
             res.status(500).json({ status: 'error', message: 'Error al agregar el producto' });
         }
     } catch (error) {
         // Log de error interno del servidor
-        console.error('Error interno del servidor al agregar el producto:', error);
+        req.logger.error('Error interno del servidor al agregar el producto:', error);
         res.status(500).json({ status: 'error', message: 'Error interno del servidor' });
     }
 }
-
 
 // Función para actualizar un producto por su ID
 export async function updateProductById(req, res) {
@@ -213,14 +209,14 @@ export async function updateProductById(req, res) {
     try {
         const updatedProduct = await productRepository.update(productId, updatedFields);
         if (!updatedProduct) {
+            req.logger.error('Producto no encontrado para actualizar por ID.');
             return res.status(404).json({ error: 'Producto no encontrado' });
         }
 
+        req.logger.info('Producto actualizado exitosamente por ID.');
         res.status(200).json(updatedProduct);
     } catch (error) {
-        console.error('Error al actualizar el producto:', error);
+        req.logger.error('Error al actualizar el producto:', error);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 }
-
-

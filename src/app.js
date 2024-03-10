@@ -23,7 +23,7 @@ import githubLoginViewRouter from './routes/githubLoginviewRouter.routes.js';
 import jwtRouter from './routes/jwt.router.js';
 import { __dirname, authorization, passportCall } from './dirname.js';
 import EmailRouter from './routes/mail.router.js';
-
+import LoggerRouter from './routes/loggers.router.js';
 //Custom router
 
  import UsersExtendRouter from './routes/custom/custom.extend.router.js';
@@ -131,6 +131,7 @@ app.use('/users', usersViewRouter);
 app.use('/github', githubLoginViewRouter);
 app.use('/api/jwt', jwtRouter);
 app.use('/',mokingRouter);
+app.use('/', LoggerRouter);
 
 
 
