@@ -1,0 +1,27 @@
+Buenas noches Matais 👋, estuve viendo lo que tenes hasta ahora y queria hacer una lista de las cositas que nos faltan para poder llegar a la mejor nota para este trabajo.
+
+☝1-Lo primero que debemos hacer es aplicar el patron repository (el factory no es obligatorio), el patro repository consiste en la creacion de una clase con metodos genericos que utiliza una clase dao(o de cualquier persistencia), luego esta clase que creaste repository lo usarias en el controller, vendrian a ser como el service del desafio anterior, podes ver la clase para recordar como se aplicaba o me podes mandar un mensajito al privado para darte ejemplos.
+
+.
+
+✌2-Crear un metodo de autorizaciones, ya se como el custom router como lo querias implementar al comienzo o bien con ayuda de una funcion utilitaria(yo ahora te voy a pasar el ejemplo de una).
+
+.
+
+🤙3-Utilizar dicho metodo de autorizacion para validar que solo el administrador pueda agregar, cambiar y/o eliminar productos.
+
+.
+
+✋4-Crearemos una funcion utilitaria para el enviado de mail mediante el uso de nodemailer como vimos en clase.
+
+.
+
+👉5-Crearemos una ruta /purchase en los carritos para poder hacer la logica de compra, este ruta tendra su controlador donde nosotros meteremos la logica de este que tendra:
+
+Creacion de un ticket, tendras que hacer el modelo y demas para poder crear segun lo que pide la consigna.
+Verificacion del contenido del carrito.
+Envio del email mediante la funcion que creamos anteriormente con el ticker creado en esta ruta.
+
+
+Y con esto ya podria darte como valido para la aprobacion con la mejor nota, asique espero me puedas consulta cualquier duda.👋
+
